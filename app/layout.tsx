@@ -3,6 +3,7 @@ import { ErrorMonitor } from "@/components/error-monitor/error-monitor"
 import { SandboxState } from "@/components/modals/sandbox-state"
 import { Toaster } from "@/components/ui/sonner"
 import { ChatProvider } from "@/lib/chat-context"
+import { ThemeProvider } from "@/lib/theme/theme-provider"
 import type { Metadata } from "next"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
 import type { ReactNode } from "react"
@@ -38,16 +39,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <Suspense fallback={null}>
-          <NuqsAdapter>
-            <ChatProvider>
-              <ErrorMonitor>{children}</ErrorMonitor>
-            </ChatProvider>
-          </NuqsAdapter>
-        </Suspense>
-        <Toaster />
-        <CommandLogsStream />
-        <SandboxState />
+        <ThemeProvider>
+          <Suspense fallback={null}>
+            <NuqsAdapter>
+              <ChatProvider>
+                <ErrorMonitor>{children}</ErrorMonitor>
+              </ChatProvider>
+            </NuqsAdapter>
+          </Suspense>
+          <Toaster />
+          <CommandLogsStream />
+          <SandboxState />
+        </ThemeProvider>
       </body>
     </html>
   )
