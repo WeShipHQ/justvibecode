@@ -2,7 +2,54 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+### Environment Variables
+
+Create a `.env.local` file in the root directory with the following variables:
+
+```bash
+# Gemini API Key (required for AI chat)
+# Get your API key from: https://ai.google.dev/
+GOOGLE_GENERATIVE_AI_API_KEY=your_gemini_api_key_here
+# or
+# GEMINI_API_KEY=your_gemini_api_key_here
+
+# Vercel OIDC Token (required for Vercel Sandbox)
+# For local development, you need to:
+# 1. Install Vercel CLI: npm i -g vercel
+# 2. Link your project: vercel link
+# 3. Pull environment variables: vercel env pull
+# This will automatically create .env.local with VERCEL_OIDC_TOKEN
+# Note: OIDC token expires after 12 hours, run `vercel env pull` to refresh
+VERCEL_OIDC_TOKEN=your_vercel_oidc_token_here
+```
+
+### Setup Vercel Sandbox
+
+1. **Install Vercel CLI** (if not already installed):
+
+   ```bash
+   npm i -g vercel
+   ```
+
+2. **Link your project to Vercel**:
+
+   ```bash
+   vercel link
+   ```
+
+   This will prompt you to:
+   - Select or create a Vercel project
+   - Link your local project to the Vercel project
+
+3. **Pull environment variables**:
+   ```bash
+   vercel env pull
+   ```
+   This will create/update `.env.local` with `VERCEL_OIDC_TOKEN` and other environment variables.
+
+**Note**: The OIDC token expires after 12 hours. If you see "Failed to create sandbox" errors, run `vercel env pull` again to refresh the token.
+
+### Run Development Server
 
 ```bash
 npm run dev
