@@ -5,7 +5,6 @@ import { defaultPresets } from "./theme-presets"
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    // Apply saved theme on initial load
     const savedTheme = localStorage.getItem("selected-theme") || "neobrutalism"
     const theme = defaultPresets[savedTheme]
 
