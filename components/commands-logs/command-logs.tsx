@@ -1,7 +1,11 @@
+import {
+  getCommand,
+  getCommandLogs,
+  type Command,
+  type CommandLog,
+} from "@/lib/command-logs-utils"
 import { cn } from "@/lib/utils"
 import { useEffect, useRef } from "react"
-import z from "zod/v3"
-import type { Command, CommandLog } from "./types"
 
 interface Props {
   command: Command
@@ -57,48 +61,4 @@ function logContent(command: Command) {
   const line = `${command.command} ${command.args.join(" ")}`
   const body = command.logs?.map((log) => log.data).join("") || ""
   return `[${date}] ${line}\n${body}`
-}
-
-const logSchema = z.object({
-  data: z.string(),
-  stream: z.enum(["stdout", "stderr"]),
-  timestamp: z.number(),
-})
-
-async function* getCommandLogs(sandboxId: string, cmdId: string) {
-  const response = await fetch(
-    `/api/sandboxes/${sandboxId}/cmds/${cmdId}/logs`,
-    { headers: { "Content-Type": "application/json" } }
-  )
-
-  const reader = response.body!.getReader()
-  const decoder = new TextDecoder()
-  let line = ""
-  while (true) {
-    const { done, value } = await reader.read()
-    if (done) break
-
-    line += decoder.decode(value, { stream: true })
-    const lines = line.split("\n")
-    for (let i = 0; i < lines.length - 1; i++) {
-      if (lines[i]) {
-        const logEntry = JSON.parse(lines[i])
-        yield logSchema.parse(logEntry)
-      }
-    }
-    line = lines[lines.length - 1]
-  }
-}
-
-const cmdSchema = z.object({
-  sandboxId: z.string(),
-  cmdId: z.string(),
-  startedAt: z.number(),
-  exitCode: z.number().optional(),
-})
-
-async function getCommand(sandboxId: string, cmdId: string) {
-  const response = await fetch(`/api/sandboxes/${sandboxId}/cmds/${cmdId}`)
-  const json = await response.json()
-  return cmdSchema.parse(json)
 }
