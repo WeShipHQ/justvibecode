@@ -74,23 +74,25 @@ export const FileExplorer = memo(function FileExplorer({
   )
 
   return (
-    <Panel className={className}>
-      <PanelHeader>
+    <Panel className={cn(className, "bg-card dark:bg-[#0a0a0a]")}>
+      <PanelHeader className="bg-muted/50 dark:bg-[#171717] border-b">
         <FileIcon className="w-4 mr-2" />
-        <span className="font-mono uppercase font-semibold">
-          Sandbox Remote Filesystem
+        <span className="font-mono text-xs font-medium uppercase tracking-wide">
+          Files
         </span>
         {selected && !disabled && (
-          <span className="ml-auto text-gray-500">{selected.path}</span>
+          <span className="ml-auto text-muted-foreground text-xs truncate max-w-[200px]">
+            {selected.path}
+          </span>
         )}
       </PanelHeader>
 
       <div className="flex text-sm h-[calc(100%-2rem-1px)]">
-        <ScrollArea className="w-1/4 border-r border-primary/18 flex-shrink-0">
-          <div>{renderFileTree(fs)}</div>
+        <ScrollArea className="w-1/4 border-r flex-shrink-0 bg-muted/30 dark:bg-[#0f0f0f]">
+          <div className="py-1">{renderFileTree(fs)}</div>
         </ScrollArea>
         {selected && sandboxId && !disabled && (
-          <ScrollArea className="w-3/4 flex-shrink-0">
+          <ScrollArea className="w-3/4 flex-shrink-0 dark:bg-[#0a0a0a]">
             <FileContent
               sandboxId={sandboxId}
               path={selected.path.substring(1)}
@@ -131,8 +133,8 @@ const FileTreeNode = memo(function FileTreeNode({
     <div>
       <div
         className={cn(
-          `flex items-center py-0.5 px-1 hover:bg-gray-100 cursor-pointer`,
-          { "bg-gray-200/80": selected?.path === node.path }
+          `flex items-center py-1 px-2 hover:bg-accent cursor-pointer text-xs transition-colors`,
+          { "bg-accent": selected?.path === node.path }
         )}
         style={{ paddingLeft: `${depth * 16 + 8}px` }}
         onClick={handleClick}
@@ -140,19 +142,19 @@ const FileTreeNode = memo(function FileTreeNode({
         {node.type === "folder" ? (
           <>
             {node.expanded ? (
-              <ChevronDownIcon className="w-4 mr-1" />
+              <ChevronDownIcon className="w-3.5 mr-1" />
             ) : (
-              <ChevronRightIcon className="w-4 mr-1" />
+              <ChevronRightIcon className="w-3.5 mr-1" />
             )}
-            <FolderIcon className="w-4 mr-2" />
+            <FolderIcon className="w-3.5 mr-2 text-blue-500 dark:text-blue-400" />
           </>
         ) : (
           <>
-            <div className="w-4 mr-1" />
-            <FileIcon className="w-4 mr-2 " />
+            <div className="w-3.5 mr-1" />
+            <FileIcon className="w-3.5 mr-2 text-foreground/60" />
           </>
         )}
-        <span className="">{node.name}</span>
+        <span className="font-mono">{node.name}</span>
       </div>
 
       {node.type === "folder" && node.expanded && node.children && (
