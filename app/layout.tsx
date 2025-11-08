@@ -41,24 +41,22 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-
         <ThemeProvider>
-        <Suspense fallback={null}>
-          <NuqsAdapter>
-            <PrivyWalletProvider>
-              <RpcProvider>
-                <ChatProvider>
-                  <ErrorMonitor>{children}</ErrorMonitor>
-                </ChatProvider>
-              </RpcProvider>
-            </PrivyWalletProvider>
-          </NuqsAdapter>
-        </Suspense>
-        <Toaster />
-        <CommandLogsStream />
-        <SandboxState />
+          <Suspense fallback={null}>
+            <NuqsAdapter>
+              <PrivyWalletProvider>
+                <RpcProvider>
+                  <ChatProvider>
+                    <ErrorMonitor>{children}</ErrorMonitor>
+                  </ChatProvider>
+                </RpcProvider>
+              </PrivyWalletProvider>
+            </NuqsAdapter>
+          </Suspense>
+          <Toaster />
+          <CommandLogsStream />
+          <SandboxState />
         </ThemeProvider>
-
       </body>
     </html>
   )
