@@ -23,10 +23,13 @@ export function useWallet() {
     return linkedAccount
   }, [user, wallets])
 
+  // Priority: Use embedded wallet first, then external wallet
+  const activeWallet = embeddedWallet || wallets?.[0]
+
   return {
-    wallet: embeddedWallet,
-    signer: embeddedWallet
-      ? ({ address: address(embeddedWallet.address) } as TransactionSigner)
+    wallet: activeWallet,
+    signer: activeWallet
+      ? ({ address: address(activeWallet.address) } as TransactionSigner)
       : undefined,
     user,
     ...rest,
