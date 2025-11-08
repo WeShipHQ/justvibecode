@@ -3,6 +3,7 @@ import { ErrorMonitor } from "@/components/error-monitor/error-monitor"
 import { SandboxState } from "@/components/modals/sandbox-state"
 import { Toaster } from "@/components/ui/sonner"
 import { ChatProvider } from "@/lib/chat-context"
+import { ThemeProvider } from "@/lib/theme/theme-provider"
 import { PrivyWalletProvider } from "@/providers/privy-provider"
 import { RpcProvider } from "@/providers/rpc-provider"
 import type { Metadata } from "next"
@@ -40,6 +41,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
+
+        <ThemeProvider>
         <Suspense fallback={null}>
           <NuqsAdapter>
             <PrivyWalletProvider>
@@ -54,6 +57,8 @@ export default function RootLayout({
         <Toaster />
         <CommandLogsStream />
         <SandboxState />
+        </ThemeProvider>
+
       </body>
     </html>
   )
