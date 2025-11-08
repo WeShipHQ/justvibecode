@@ -9,9 +9,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useAvailableModels } from "@/hooks/use-available-models"
 import { Loader2Icon } from "lucide-react"
 import { memo } from "react"
-import { useAvailableModels } from "./use-available-models"
 
 interface Props {
   modelId: string
