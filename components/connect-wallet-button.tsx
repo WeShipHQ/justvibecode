@@ -15,6 +15,7 @@ import { formatAddress } from "@/lib/utils"
 import { useLogin, useLogout } from "@privy-io/react-auth"
 import { CheckIcon, CopyIcon } from "lucide-react"
 import { BalanceButton } from "./balance-button"
+import { WalletBalance } from "./wallet/wallet-balance"
 
 function WalletAddressWithCopy({
   address,
@@ -85,10 +86,15 @@ export function ConnectWalletButton() {
             </DropdownMenuTrigger>
             <DropdownMenuContent
               sideOffset={12}
-              className="w-64"
+              className="w-80"
               align="end"
               side="bottom"
             >
+              {/* Wallet Balance */}
+              <div className="p-2">
+                <WalletBalance />
+              </div>
+
               {/* Connected Wallet Info */}
               {user?.wallet?.address && (
                 <WalletAddressWithCopy

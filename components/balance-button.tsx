@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { useSolBalance } from "@/hooks/use-sol-balance"
+import { useTokenBalances } from "@/hooks/use-token-balances"
 import { formatNumber } from "@/lib/utils"
 import { useState } from "react"
 import { DepositDialog } from "./deposit-dialog"
@@ -16,10 +16,10 @@ export function BalanceButton({
   walletAddress,
   className,
 }: BalanceButtonProps) {
-  const { balanceInSol, isLoading, error } = useSolBalance(walletAddress)
+  const { balances, loading, error } = useTokenBalances()
   const [isDepositDialogOpen, setIsDepositDialogOpen] = useState(false)
 
-  if (isLoading) {
+  if (loading) {
     return (
       <Button variant="neutral" size="default" className={className} disabled>
         <WalletIcon className="w-4 h-4 mr-2" />
@@ -46,7 +46,7 @@ export function BalanceButton({
         onClick={() => setIsDepositDialogOpen(true)}
       >
         <WalletIcon className="w-4 h-4 mr-2" />
-        {formatNumber(balanceInSol)} SOL
+        {formatNumber(balances.sol)} SOL
       </Button>
 
       <DepositDialog
