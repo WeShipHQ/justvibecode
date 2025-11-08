@@ -4,6 +4,8 @@ import { SandboxState } from "@/components/modals/sandbox-state"
 import { Toaster } from "@/components/ui/sonner"
 import { ChatProvider } from "@/lib/chat-context"
 import { ThemeProvider } from "@/lib/theme/theme-provider"
+import { PrivyWalletProvider } from "@/providers/privy-provider"
+import { RpcProvider } from "@/providers/rpc-provider"
 import type { Metadata } from "next"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
 import type { ReactNode } from "react"
@@ -39,18 +41,24 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
+
         <ThemeProvider>
-          <Suspense fallback={null}>
-            <NuqsAdapter>
-              <ChatProvider>
-                <ErrorMonitor>{children}</ErrorMonitor>
-              </ChatProvider>
-            </NuqsAdapter>
-          </Suspense>
-          <Toaster />
-          <CommandLogsStream />
-          <SandboxState />
+        <Suspense fallback={null}>
+          <NuqsAdapter>
+            <PrivyWalletProvider>
+              <RpcProvider>
+                <ChatProvider>
+                  <ErrorMonitor>{children}</ErrorMonitor>
+                </ChatProvider>
+              </RpcProvider>
+            </PrivyWalletProvider>
+          </NuqsAdapter>
+        </Suspense>
+        <Toaster />
+        <CommandLogsStream />
+        <SandboxState />
         </ThemeProvider>
+
       </body>
     </html>
   )

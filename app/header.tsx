@@ -1,3 +1,6 @@
+"use client"
+
+import { ConnectWalletButton } from "@/components/connect-wallet-button"
 import { VercelDashed } from "@/components/icons/vercel-dashed"
 import { ToggleWelcome } from "@/components/modals/welcome"
 import { cn } from "@/lib/utils"
@@ -6,7 +9,7 @@ interface Props {
   className?: string
 }
 
-export async function Header({ className }: Props) {
+export function Header({ className }: Props) {
   return (
     <header className={cn("flex items-center justify-between", className)}>
       <div className="flex items-center">
@@ -15,7 +18,8 @@ export async function Header({ className }: Props) {
           OSS Vibe Coding Platform
         </span>
       </div>
-      <div className="flex items-center ml-auto space-x-1.5">
+      <div className="flex items-center ml-auto space-x-1.5 md:space-x-2">
+        <ConnectWalletButton />
         <ToggleWelcome />
       </div>
     </header>
