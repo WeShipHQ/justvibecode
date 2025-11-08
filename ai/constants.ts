@@ -5,7 +5,7 @@ export enum Models {
   Gemini15Flash = "gemini-1.5-flash",
 }
 
-export const DEFAULT_MODEL = Models.GoogleGeminiFlash
+export const DEFAULT_MODEL = Models.Gemini20FlashExp
 
 export const SUPPORTED_MODELS: string[] = [
   Models.GoogleGeminiFlash,

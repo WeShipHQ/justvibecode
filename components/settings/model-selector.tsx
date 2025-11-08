@@ -9,10 +9,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useAvailableModels } from "@/hooks/use-available-models"
 import { cn } from "@/lib/utils"
 import { Loader2Icon } from "lucide-react"
 import { useMemo } from "react"
-import { useAvailableModels } from "./use-available-models"
 import { useModelId } from "./use-settings"
 
 export function ModelSelector({ className }: { className?: string }) {
