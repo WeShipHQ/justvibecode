@@ -3,7 +3,7 @@ import type { TextUIPart } from "ai"
 
 export function Text({ part }: { part: TextUIPart }) {
   return (
-    <div className="text-sm px-3.5 py-3 border bg-secondary/90 text-secondary-foreground border-gray-300 rounded-md font-mono">
+    <div className="space-y-4 text-(--tw-prose-body) prose-zinc dark:prose-invert w-full max-w-full px-4 text-sm break-words">
       <MarkdownRenderer content={part.text} />
     </div>
   )
