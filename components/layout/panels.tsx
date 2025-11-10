@@ -14,9 +14,9 @@ export function Horizontal({ defaultLayout, left, right }: HProps) {
     document.cookie = `${HORIZONTAL_COOKIE}=${JSON.stringify(sizes)}`
   }
   return (
-    <PanelGroup direction="horizontal" onLayout={onLayout}>
+    <PanelGroup direction="horizontal" onLayout={onLayout} className="gap-2.5">
       <Panel defaultSize={defaultLayout[0]}>{left}</Panel>
-      <PanelResizeHandle className="w-2" />
+      <PanelResizeHandle className="w-1 bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors rounded-full" />
       <Panel defaultSize={defaultLayout[1]}>{right}</Panel>
     </PanelGroup>
   )
