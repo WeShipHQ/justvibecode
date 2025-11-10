@@ -12,7 +12,7 @@ import { LogoutIcon, WalletIcon } from "@/components/ui/icons"
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard"
 import { useWallet } from "@/hooks/use-wallet"
 import { formatAddress } from "@/lib/utils"
-import { useLogin, useLogout } from "@privy-io/react-auth"
+import { useAuth } from "@/providers/auth-provider"
 import { CheckIcon, CopyIcon } from "lucide-react"
 import { BalanceButton } from "./balance-button"
 import { WalletBalance } from "./wallet/wallet-balance"
@@ -48,9 +48,10 @@ function WalletAddressWithCopy({
 }
 
 export function ConnectWalletButton() {
+  const { login, logout } = useAuth()
   const { ready, authenticated, user, wallet } = useWallet()
-  const { login } = useLogin()
-  const { logout } = useLogout()
+  // const { login } = useLogin()
+  // const { logout } = useLogout()
 
   const disableLogin = !ready || (ready && authenticated)
 

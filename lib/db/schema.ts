@@ -2,6 +2,7 @@ import type { InferSelectModel } from "drizzle-orm"
 import {
   boolean,
   foreignKey,
+  index,
   json,
   jsonb,
   pgTable,
@@ -13,13 +14,110 @@ import {
 } from "drizzle-orm/pg-core"
 import type { AppUsage } from "../usage"
 
-export const user = pgTable("User", {
-  id: uuid("id").primaryKey().notNull().defaultRandom(),
-  email: varchar("email", { length: 64 }).notNull(),
-  password: varchar("password", { length: 64 }),
-})
+// User table - Enhanced for wallet-based authentication
+export const user = pgTable(
+  "User",
+  {
+    id: uuid("id").primaryKey().notNull().defaultRandom(),
+    // Wallet address is the primary identifier for authentication
+    walletAddress: varchar("walletAddress", { length: 64 }).notNull().unique(),
+    // Privy user ID for linking to Privy authentication
+    privyUserId: varchar("privyUserId", { length: 128 }),
+    // Optional email (may not be provided in wallet-only auth)
+    email: varchar("email", { length: 64 }),
+    // Legacy password field (kept for backwards compatibility)
+    password: varchar("password", { length: 64 }),
+    // User profile information
+    displayName: varchar("displayName", { length: 128 }),
+    avatarUrl: text("avatarUrl"),
+    // User preferences stored as JSONB
+    settings: jsonb("settings").$type<{
+      theme?: "light" | "dark" | "system"
+      defaultModel?: string
+      reasoningEffort?: "low" | "medium"
+      autoFixErrors?: boolean
+      promptInput?: string
+    }>(),
+    // Timestamps
+    createdAt: timestamp("createdAt").notNull().defaultNow(),
+    lastActiveAt: timestamp("lastActiveAt").notNull().defaultNow(),
+  },
+  (table) => ({
+    walletAddressIdx: index("user_wallet_address_idx").on(table.walletAddress),
+    privyUserIdIdx: index("user_privy_user_id_idx").on(table.privyUserId),
+  })
+)
 
 export type User = InferSelectModel<typeof user>
+
+// Wallet table - Support multiple wallets per user
+export const wallet = pgTable(
+  "Wallet",
+  {
+    id: uuid("id").primaryKey().notNull().defaultRandom(),
+    userId: uuid("userId")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    // Wallet address (unique across all users)
+    address: varchar("address", { length: 64 }).notNull().unique(),
+    // Wallet type (embedded Privy wallet or external wallet)
+    walletType: varchar("walletType", {
+      enum: ["embedded", "phantom", "solflare", "backpack", "other"],
+    })
+      .notNull()
+      .default("other"),
+    // Whether this is the user's active/primary wallet
+    isActive: boolean("isActive").notNull().default(true),
+    // Cached balance snapshot (updated periodically)
+    balance: jsonb("balance").$type<{
+      SOL?: string
+      USDC?: string
+      lastUpdated?: string
+    }>(),
+    // Timestamps
+    createdAt: timestamp("createdAt").notNull().defaultNow(),
+    lastUsedAt: timestamp("lastUsedAt").notNull().defaultNow(),
+  },
+  (table) => ({
+    addressIdx: index("wallet_address_idx").on(table.address),
+    userIdIdx: index("wallet_user_id_idx").on(table.userId),
+  })
+)
+
+export type Wallet = InferSelectModel<typeof wallet>
+
+// Session table - JWT-based authentication persistence
+export const session = pgTable(
+  "Session",
+  {
+    id: uuid("id").primaryKey().notNull().defaultRandom(),
+    userId: uuid("userId")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    // Wallet address used for this session
+    walletAddress: varchar("walletAddress", { length: 64 }).notNull(),
+    // Session token (JWT or random token)
+    sessionToken: varchar("sessionToken", { length: 512 }).notNull().unique(),
+    // Session expiration
+    expiresAt: timestamp("expiresAt").notNull(),
+    // User agent for security tracking
+    userAgent: text("userAgent"),
+    // IP address for security tracking
+    ipAddress: varchar("ipAddress", { length: 45 }),
+    // Timestamps
+    createdAt: timestamp("createdAt").notNull().defaultNow(),
+    lastActiveAt: timestamp("lastActiveAt").notNull().defaultNow(),
+  },
+  (table) => ({
+    sessionTokenIdx: index("session_token_idx").on(table.sessionToken),
+    userIdIdx: index("session_user_id_idx").on(table.userId),
+    walletAddressIdx: index("session_wallet_address_idx").on(
+      table.walletAddress
+    ),
+  })
+)
+
+export type Session = InferSelectModel<typeof session>
 
 export const chat = pgTable("Chat", {
   id: uuid("id").primaryKey().notNull().defaultRandom(),

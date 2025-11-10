@@ -4,6 +4,7 @@ import envConfig from "@/configs/env"
 import type { PrivyClientConfig } from "@privy-io/react-auth"
 import { PrivyProvider } from "@privy-io/react-auth"
 import { toSolanaWalletConnectors } from "@privy-io/react-auth/solana"
+import { AuthProvider } from "./auth-provider"
 
 const privyConfig: PrivyClientConfig = {
   loginMethods: ["wallet"],
@@ -42,7 +43,7 @@ export function PrivyWalletProvider({
       appId={envConfig.NEXT_PUBLIC_PRIVY_APP_ID}
       config={privyConfig}
     >
-      {children}
+      <AuthProvider>{children}</AuthProvider>
     </PrivyProvider>
   )
 }
