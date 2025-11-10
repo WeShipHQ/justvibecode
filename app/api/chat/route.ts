@@ -11,10 +11,6 @@ import {
 } from "ai"
 import { checkBotId } from "botid/server"
 import { NextResponse } from "next/server"
-import {
-  extractWalletFromRequest,
-  freeMessageTracker,
-} from "./free-message-tracker"
 import prompt from "./prompt.md"
 import { createChatRouteConfig, type PaymentToken } from "./x402-config"
 import { x402Handler } from "./x402-handler"
@@ -25,6 +21,7 @@ interface BodyData {
   reasoningEffort?: "low" | "medium"
   paymentToken?: PaymentToken
   walletAddress?: string // Add wallet address to body for free message tracking
+  isFreeMessage?: boolean // Flag to bypass payment for free messages
 }
 
 export async function POST(req: Request) {
@@ -102,23 +99,10 @@ export async function POST(req: Request) {
   }
 
   // ===== FREE MESSAGE CHECK =====
-  // Extract wallet address for free message tracking
-  const walletAddress = body.walletAddress || extractWalletFromRequest(req)
+  // Check if this is a free message (client-side determined via localStorage)
+  if (body.isFreeMessage === true) {
+    console.log("🆓 Processing free message (bypassing payment)")
 
-  console.log(`🔍 Processing request - walletAddress: ${walletAddress}`)
-  console.log(`📦 Request body keys:`, Object.keys(body))
-
-  if (
-    walletAddress &&
-    freeMessageTracker.isEligibleForFreeMessage(walletAddress)
-  ) {
-    // User gets first message free! Process without payment
-    console.log(`🆓 Free message for wallet: ${walletAddress}`)
-
-    // Record usage để next message sẽ require payment
-    freeMessageTracker.recordMessageUsage(walletAddress)
-
-    // Process AI request directly (same as paid flow)
     const [models] = await Promise.all([getAvailableModels()])
     const {
       messages,

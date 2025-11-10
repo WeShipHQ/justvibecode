@@ -1,5 +1,9 @@
 "use client"
 
+import {
+  getUsageStats,
+  isEligibleForFreeMessage,
+} from "@/lib/free-message-storage"
 import { useCallback, useEffect, useState } from "react"
 
 interface FreeMessageStatus {
@@ -14,10 +18,12 @@ interface FreeMessageStatus {
 export function useFreeMessageStatus(walletAddress?: string) {
   const [status, setStatus] = useState<FreeMessageStatus | null>(null)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
 
-  const fetchStatus = useCallback(async () => {
-    console.log("🔍 Fetching free message status for wallet:", walletAddress)
+  const fetchStatus = useCallback(() => {
+    console.log(
+      "🔍 Checking free message status (localStorage) for wallet:",
+      walletAddress
+    )
 
     if (!walletAddress) {
       console.log("❌ No wallet address provided")
@@ -26,24 +32,21 @@ export function useFreeMessageStatus(walletAddress?: string) {
     }
 
     setLoading(true)
-    setError(null)
 
     try {
-      const url = `/api/free-message-status?wallet=${walletAddress}`
-      console.log("📡 Calling API:", url)
+      const isEligible = isEligibleForFreeMessage(walletAddress)
+      const usageStats = getUsageStats(walletAddress)
 
-      const response = await fetch(url)
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`)
+      const statusData: FreeMessageStatus = {
+        walletAddress,
+        isEligibleForFreeMessage: isEligible,
+        usageStats,
       }
 
-      const data = await response.json()
-      console.log("✅ API response:", data)
-      setStatus(data)
+      console.log("✅ localStorage status:", statusData)
+      setStatus(statusData)
     } catch (err: any) {
-      console.error("Failed to fetch free message status:", err)
-      setError(err.message)
+      console.error("Failed to check free message status:", err)
     } finally {
       setLoading(false)
     }
@@ -55,12 +58,12 @@ export function useFreeMessageStatus(walletAddress?: string) {
     } else {
       setStatus(null)
     }
-  }, [walletAddress]) // Remove fetchStatus from dependencies to prevent infinite loop
+  }, [walletAddress, fetchStatus])
 
   return {
     status,
     loading,
-    error,
+    error: null, // No more API errors
     refetch: fetchStatus,
     hasFreeMessage: status?.isEligibleForFreeMessage ?? false,
     messageCount: status?.usageStats?.messageCount ?? 0,
