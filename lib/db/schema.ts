@@ -119,31 +119,147 @@ export const session = pgTable(
 
 export type Session = InferSelectModel<typeof session>
 
-export const chat = pgTable("Chat", {
-  id: uuid("id").primaryKey().notNull().defaultRandom(),
-  createdAt: timestamp("createdAt").notNull(),
-  title: text("title").notNull(),
-  userId: uuid("userId")
-    .notNull()
-    .references(() => user.id),
-  visibility: varchar("visibility", { enum: ["public", "private"] })
-    .notNull()
-    .default("private"),
-  lastContext: jsonb("lastContext").$type<AppUsage | null>(),
-})
+// Payment table - Store x402 payment transactions
+export const payment = pgTable(
+  "Payment",
+  {
+    id: uuid("id").primaryKey().notNull().defaultRandom(),
+    userId: uuid("userId")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    // Wallet address that made the payment
+    walletAddress: varchar("walletAddress", { length: 64 }).notNull(),
+    // Solana transaction signature (unique identifier)
+    transactionSignature: varchar("transactionSignature", { length: 128 })
+      .notNull()
+      .unique(),
+    // Network where transaction occurred
+    network: varchar("network", { length: 32 }).notNull(), // "solana-devnet" | "solana-mainnet"
+    // Token used for payment
+    token: varchar("token", { length: 16 }).notNull(), // "USDC" | "SOL"
+    // Amount paid in atomic units (lamports for SOL, smallest unit for USDC)
+    amount: varchar("amount", { length: 64 }).notNull(),
+    // Payment status
+    status: varchar("status", {
+      enum: ["pending", "verified", "settled", "failed"],
+    })
+      .notNull()
+      .default("pending"),
+    // Full facilitator response (verification data)
+    facilitatorResponse: jsonb("facilitatorResponse"),
+    // API resource that was paid for
+    resourceUrl: text("resourceUrl"),
+    // Error details if payment failed
+    errorMessage: text("errorMessage"),
+    // Timestamps
+    createdAt: timestamp("createdAt").notNull().defaultNow(),
+    verifiedAt: timestamp("verifiedAt"),
+    settledAt: timestamp("settledAt"),
+  },
+  (table) => ({
+    transactionSignatureIdx: index("payment_transaction_signature_idx").on(
+      table.transactionSignature
+    ),
+    userIdIdx: index("payment_user_id_idx").on(table.userId),
+    walletAddressIdx: index("payment_wallet_address_idx").on(
+      table.walletAddress
+    ),
+    statusIdx: index("payment_status_idx").on(table.status),
+    createdAtIdx: index("payment_created_at_idx").on(table.createdAt),
+  })
+)
+
+export type Payment = InferSelectModel<typeof payment>
+
+// FreeMessage table - Track free message usage per wallet
+export const freeMessage = pgTable(
+  "FreeMessage",
+  {
+    id: uuid("id").primaryKey().notNull().defaultRandom(),
+    // Wallet address (unique per user)
+    walletAddress: varchar("walletAddress", { length: 64 }).notNull().unique(),
+    // Number of free messages used
+    messageCount: varchar("messageCount", { length: 32 }).notNull().default("0"),
+    // Maximum free messages allowed
+    limit: varchar("limit", { length: 32 }).notNull().default("1"),
+    // Timestamps
+    firstMessageAt: timestamp("firstMessageAt").notNull().defaultNow(),
+    lastMessageAt: timestamp("lastMessageAt"),
+    resetAt: timestamp("resetAt"),
+  },
+  (table) => ({
+    walletAddressIdx: index("free_message_wallet_address_idx").on(
+      table.walletAddress
+    ),
+  })
+)
+
+export type FreeMessage = InferSelectModel<typeof freeMessage>
+
+export const chat = pgTable(
+  "Chat",
+  {
+    id: uuid("id").primaryKey().notNull().defaultRandom(),
+    createdAt: timestamp("createdAt").notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+    title: text("title").notNull(),
+    userId: uuid("userId")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    visibility: varchar("visibility", { enum: ["public", "private"] })
+      .notNull()
+      .default("private"),
+    // AI model used in this chat
+    modelId: varchar("modelId", { length: 64 }),
+    // Link to sandbox if this chat has code execution
+    sandboxId: varchar("sandboxId", { length: 128 }),
+    // Soft delete flag
+    isDeleted: boolean("isDeleted").notNull().default(false),
+    deletedAt: timestamp("deletedAt"),
+    lastContext: jsonb("lastContext").$type<AppUsage | null>(),
+  },
+  (table) => ({
+    userIdIdx: index("chat_user_id_idx").on(table.userId),
+    updatedAtIdx: index("chat_updated_at_idx").on(table.updatedAt),
+    isDeletedIdx: index("chat_is_deleted_idx").on(table.isDeleted),
+  })
+)
 
 export type Chat = InferSelectModel<typeof chat>
 
-export const message = pgTable("Message", {
-  id: uuid("id").primaryKey().notNull().defaultRandom(),
-  chatId: uuid("chatId")
-    .notNull()
-    .references(() => chat.id),
-  role: varchar("role").notNull(),
-  parts: json("parts").notNull(),
-  attachments: json("attachments").notNull(),
-  createdAt: timestamp("createdAt").notNull(),
-})
+export const message = pgTable(
+  "Message",
+  {
+    id: uuid("id").primaryKey().notNull().defaultRandom(),
+    chatId: uuid("chatId")
+      .notNull()
+      .references(() => chat.id, { onDelete: "cascade" }),
+    role: varchar("role").notNull(),
+    // Extended parts to support DataPart types (text, tool-call, tool-result, etc.)
+    parts: jsonb("parts").notNull(),
+    attachments: json("attachments").notNull(),
+    // Link to payment if this message was paid for
+    paymentId: uuid("paymentId").references(() => payment.id),
+    // Store AI model metadata (model name, reasoning effort, tokens, etc.)
+    metadata: jsonb("metadata").$type<{
+      modelId?: string
+      reasoningEffort?: "low" | "medium" | "high"
+      tokens?: {
+        input?: number
+        output?: number
+        total?: number
+      }
+      finishReason?: string
+      streamDuration?: number
+    }>(),
+    createdAt: timestamp("createdAt").notNull().defaultNow(),
+  },
+  (table) => ({
+    chatIdIdx: index("message_chat_id_idx").on(table.chatId),
+    paymentIdIdx: index("message_payment_id_idx").on(table.paymentId),
+    createdAtIdx: index("message_created_at_idx").on(table.createdAt),
+  })
+)
 
 export type DBMessage = InferSelectModel<typeof message>
 
