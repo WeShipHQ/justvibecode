@@ -11,13 +11,14 @@ import { Logs } from "../../logs"
 import { Preview } from "../../preview"
 
 interface PageProps {
-  params: {
-    chatId: string
-  }
+  // params: {
+  //   chatId: string
+  // }
+  params: Promise<{ chatId: string }>
 }
 
 export default async function ChatPage({ params }: PageProps) {
-  const { chatId } = params
+  const { chatId } = await params
   const store = await cookies()
   const banner = store.get("banner-hidden")?.value !== "true"
   const horizontalSizes = getHorizontal(store)

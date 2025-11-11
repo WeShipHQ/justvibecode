@@ -18,7 +18,9 @@ import { mutate } from "swr"
 interface ChatContextValue {
   chat: Chat<ChatUIMessage>
   onFinishCallback?: (props: { message: ChatUIMessage }) => void
-  setOnFinishCallback: (callback: (props: { message: ChatUIMessage }) => void) => void
+  setOnFinishCallback: (
+    callback: (props: { message: ChatUIMessage }) => void
+  ) => void
 }
 
 const ChatContext = createContext<ChatContextValue | undefined>(undefined)
@@ -28,7 +30,9 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const mapDataToStateRef = useRef(mapDataToState)
   mapDataToStateRef.current = mapDataToState
 
-  const onFinishCallbackRef = useRef<((props: { message: ChatUIMessage }) => void) | undefined>(undefined)
+  const onFinishCallbackRef = useRef<
+    ((props: { message: ChatUIMessage }) => void) | undefined
+  >(undefined)
 
   const chat = useMemo(
     () =>
@@ -50,12 +54,20 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     []
   )
 
-  const setOnFinishCallback = (callback: (props: { message: ChatUIMessage }) => void) => {
+  const setOnFinishCallback = (
+    callback: (props: { message: ChatUIMessage }) => void
+  ) => {
     onFinishCallbackRef.current = callback
   }
 
   return (
-    <ChatContext.Provider value={{ chat, onFinishCallback: onFinishCallbackRef.current, setOnFinishCallback }}>
+    <ChatContext.Provider
+      value={{
+        chat,
+        onFinishCallback: onFinishCallbackRef.current,
+        setOnFinishCallback,
+      }}
+    >
       {children}
     </ChatContext.Provider>
   )

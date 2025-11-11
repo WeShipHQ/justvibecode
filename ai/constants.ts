@@ -6,7 +6,7 @@ export enum Models {
   GPT4oMini = "openai/gpt-4o-mini",
 }
 
-export const DEFAULT_MODEL = Models.Gemini20FlashExp
+export const DEFAULT_MODEL = Models.GPT4oMini
 
 export const SUPPORTED_MODELS: string[] = [
   Models.GoogleGeminiFlash,

@@ -1,3 +1,10 @@
+import {
+  appendCommandLogs,
+  createCommand,
+  markCommandCompleted,
+  markCommandFailed,
+  markCommandStarted,
+} from "@/lib/db/services/sandbox.service"
 import { Command, Sandbox } from "@vercel/sandbox"
 import type { UIMessage, UIMessageStreamWriter } from "ai"
 import { tool } from "ai"
@@ -105,6 +112,23 @@ export const runCommand = ({ writer }: Params) =>
         return richError.message
       }
 
+      // Persist command to database
+      let dbCommandId: string | undefined
+      try {
+        const dbCommand = await createCommand({
+          sandboxId,
+          cmdId: cmd.cmdId,
+          command,
+          args,
+          background: !wait,
+        })
+        dbCommandId = dbCommand.id
+        await markCommandStarted(dbCommand.id)
+      } catch (dbError) {
+        console.error("Failed to persist command to database:", dbError)
+        // Continue even if DB save fails
+      }
+
       writer.write({
         id: toolCallId,
         type: "data-run-command",
@@ -156,6 +180,41 @@ export const runCommand = ({ writer }: Params) =>
           done.stderr(),
         ])
 
+        // Persist command logs to database
+        if (dbCommandId) {
+          try {
+            const logs = []
+            if (stdout) {
+              logs.push({
+                stream: "stdout" as const,
+                data: stdout,
+                sequence: "0",
+              })
+            }
+            if (stderr) {
+              logs.push({
+                stream: "stderr" as const,
+                data: stderr,
+                sequence: "0",
+              })
+            }
+            if (logs.length > 0) {
+              await appendCommandLogs(dbCommandId, logs)
+            }
+
+            if (done.exitCode === 0) {
+              await markCommandCompleted(dbCommandId, String(done.exitCode))
+            } else {
+              await markCommandFailed(dbCommandId, String(done.exitCode))
+            }
+          } catch (dbError) {
+            console.error(
+              "Failed to persist command logs to database:",
+              dbError
+            )
+          }
+        }
+
         writer.write({
           id: toolCallId,
           type: "data-run-command",
@@ -184,6 +243,18 @@ export const runCommand = ({ writer }: Params) =>
           args: { sandboxId, commandId: cmd.cmdId },
           error,
         })
+
+        // Mark command as failed in database
+        if (dbCommandId) {
+          try {
+            await markCommandFailed(dbCommandId)
+          } catch (dbError) {
+            console.error(
+              "Failed to mark command as failed in database:",
+              dbError
+            )
+          }
+        }
 
         writer.write({
           id: toolCallId,

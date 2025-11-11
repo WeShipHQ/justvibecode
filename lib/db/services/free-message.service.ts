@@ -166,10 +166,10 @@ export async function updateFreeMessageLimit(
 /**
  * Delete free message record
  */
-export async function deleteFreeMessage(
-  walletAddress: string
-): Promise<void> {
-  await db.delete(freeMessage).where(eq(freeMessage.walletAddress, walletAddress))
+export async function deleteFreeMessage(walletAddress: string): Promise<void> {
+  await db
+    .delete(freeMessage)
+    .where(eq(freeMessage.walletAddress, walletAddress))
 }
 
 /**

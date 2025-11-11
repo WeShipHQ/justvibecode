@@ -154,6 +154,7 @@ export async function deleteUserSessions(userId: string): Promise<void> {
 export async function deleteExpiredSessions(): Promise<number> {
   const result = await db
     .delete(session)
+    // @ts-expect-error
     .where(gt(new Date(), session.expiresAt))
     .returning()
 

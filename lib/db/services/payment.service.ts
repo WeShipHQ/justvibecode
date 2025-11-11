@@ -1,4 +1,4 @@
-import { eq, desc, and, gte, lte } from "drizzle-orm"
+import { and, desc, eq, gte, lte } from "drizzle-orm"
 import { db } from "../drizzle"
 import { payment, type Payment } from "../schema"
 
@@ -260,7 +260,9 @@ export async function getUserPaymentStats(userId: string) {
 /**
  * Get recent payments (last 24 hours)
  */
-export async function getRecentPayments(limit: number = 100): Promise<Payment[]> {
+export async function getRecentPayments(
+  limit: number = 100
+): Promise<Payment[]> {
   const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000)
 
   return db

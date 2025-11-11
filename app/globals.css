@@ -1,96 +1,122 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-
 :root {
-  /* Neobrutalism Theme - Bold, expressive design with strong contrast */
-  --background: #ffffff;
-  --foreground: #000000;
-  --card: #ffffff;
-  --card-foreground: #000000;
-  --popover: #ffffff;
-  --popover-foreground: #000000;
-  --primary: #ff3333;
+  --background: #cccccc;
+  --foreground: #1f1f1f;
+  --card: #b0b0b0;
+  --card-foreground: #1f1f1f;
+  --popover: #b0b0b0;
+  --popover-foreground: #1f1f1f;
+  --primary: #b71c1c;
   --primary-foreground: #ffffff;
-  --secondary: #ffff00;
-  --secondary-foreground: #000000;
-  --muted: #f0f0f0;
-  --muted-foreground: #333333;
-  --accent: #0066ff;
+  --secondary: #556b2f;
+  --secondary-foreground: #ffffff;
+  --muted: #b8b8b8;
+  --muted-foreground: #4a4a4a;
+  --accent: #4682b4;
   --accent-foreground: #ffffff;
-  --destructive: #000000;
-  --destructive-foreground: #ffffff;
-  --border: #000000;
-  --input: #000000;
-  --ring: #ff3333;
-  --chart-1: #ff3333;
-  --chart-2: #ffff00;
-  --chart-3: #0066ff;
-  --chart-4: #00cc00;
-  --chart-5: #cc00cc;
-  --radius: 0px;
-  --sidebar: #f0f0f0;
-  --sidebar-foreground: #000000;
-  --sidebar-primary: #ff3333;
+  --destructive: #ff6f00;
+  --destructive-foreground: #000000;
+  --border: #505050;
+  --input: #505050;
+  --ring: #b71c1c;
+  --chart-1: #b71c1c;
+  --chart-2: #556b2f;
+  --chart-3: #4682b4;
+  --chart-4: #ff6f00;
+  --chart-5: #8d6e63;
+  --sidebar: #b0b0b0;
+  --sidebar-foreground: #1f1f1f;
+  --sidebar-primary: #b71c1c;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #0066ff;
+  --sidebar-accent: #4682b4;
   --sidebar-accent-foreground: #ffffff;
-  --sidebar-border: #000000;
-  --sidebar-ring: #ff3333;
-  --shadow-x: 4px;
-  --shadow-y: 4px;
-  --shadow-blur: 0px;
+  --sidebar-border: #505050;
+  --sidebar-ring: #b71c1c;
+  --font-sans: "Oxanium", sans-serif;
+  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-mono: "Source Code Pro", monospace;
+  --radius: 0px;
+  --shadow-x: 0px;
+  --shadow-y: 2px;
+  --shadow-blur: 4px;
   --shadow-spread: 0px;
-  --shadow-opacity: 1;
-  --shadow-color: #000000;
-  --font-sans: DM Sans, sans-serif;
-  --font-serif: Source Serif 4, serif;
-  --font-mono: Space Mono, monospace;
+  --shadow-opacity: 0.4;
+  --shadow-color: hsl(0 0% 0%);
+  --shadow-2xs: 0px 2px 4px 0px hsl(0 0% 0% / 0.2);
+  --shadow-xs: 0px 2px 4px 0px hsl(0 0% 0% / 0.2);
+  --shadow-sm:
+    0px 2px 4px 0px hsl(0 0% 0% / 0.4), 0px 1px 2px -1px hsl(0 0% 0% / 0.4);
+  --shadow:
+    0px 2px 4px 0px hsl(0 0% 0% / 0.4), 0px 1px 2px -1px hsl(0 0% 0% / 0.4);
+  --shadow-md:
+    0px 2px 4px 0px hsl(0 0% 0% / 0.4), 0px 2px 4px -1px hsl(0 0% 0% / 0.4);
+  --shadow-lg:
+    0px 2px 4px 0px hsl(0 0% 0% / 0.4), 0px 4px 6px -1px hsl(0 0% 0% / 0.4);
+  --shadow-xl:
+    0px 2px 4px 0px hsl(0 0% 0% / 0.4), 0px 8px 10px -1px hsl(0 0% 0% / 0.4);
+  --shadow-2xl: 0px 2px 4px 0px hsl(0 0% 0% / 1);
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
 }
 
 .dark {
-  --background: #000000;
-  --foreground: #ffffff;
-  --card: #333333;
-  --card-foreground: #ffffff;
-  --popover: #333333;
-  --popover-foreground: #ffffff;
-  --primary: #ff6666;
-  --primary-foreground: #000000;
-  --secondary: #ffff33;
+  --background: #1a1a1a;
+  --foreground: #e0e0e0;
+  --card: #2a2a2a;
+  --card-foreground: #e0e0e0;
+  --popover: #2a2a2a;
+  --popover-foreground: #e0e0e0;
+  --primary: #e53935;
+  --primary-foreground: #ffffff;
+  --secondary: #689f38;
   --secondary-foreground: #000000;
-  --muted: #333333;
-  --muted-foreground: #cccccc;
-  --accent: #3399ff;
+  --muted: #252525;
+  --muted-foreground: #a0a0a0;
+  --accent: #64b5f6;
   --accent-foreground: #000000;
-  --destructive: #ffffff;
+  --destructive: #ffa000;
   --destructive-foreground: #000000;
-  --border: #ffffff;
-  --input: #ffffff;
-  --ring: #ff6666;
-  --chart-1: #ff6666;
-  --chart-2: #ffff33;
-  --chart-3: #3399ff;
-  --chart-4: #33cc33;
-  --chart-5: #cc33cc;
-  --sidebar: #000000;
-  --sidebar-foreground: #ffffff;
-  --sidebar-primary: #ff6666;
-  --sidebar-primary-foreground: #000000;
-  --sidebar-accent: #3399ff;
+  --border: #4a4a4a;
+  --input: #4a4a4a;
+  --ring: #e53935;
+  --chart-1: #e53935;
+  --chart-2: #689f38;
+  --chart-3: #64b5f6;
+  --chart-4: #ffa000;
+  --chart-5: #a1887f;
+  --sidebar: #141414;
+  --sidebar-foreground: #e0e0e0;
+  --sidebar-primary: #e53935;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #64b5f6;
   --sidebar-accent-foreground: #000000;
-  --sidebar-border: #ffffff;
-  --sidebar-ring: #ff6666;
-  --shadow-x: 4px;
-  --shadow-y: 4px;
-  --shadow-blur: 0px;
+  --sidebar-border: #4a4a4a;
+  --sidebar-ring: #e53935;
+  --font-sans: "Oxanium", sans-serif;
+  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-mono: "Source Code Pro", monospace;
+  --radius: 0px;
+  --shadow-x: 0px;
+  --shadow-y: 2px;
+  --shadow-blur: 5px;
   --shadow-spread: 0px;
-  --shadow-opacity: 1;
-  --shadow-color: #000000;
-  --font-sans: DM Sans, sans-serif;
-  --font-serif: Source Serif 4, serif;
-  --font-mono: Space Mono, monospace;
+  --shadow-opacity: 0.6;
+  --shadow-color: hsl(0 0% 0%);
+  --shadow-2xs: 0px 2px 5px 0px hsl(0 0% 0% / 0.3);
+  --shadow-xs: 0px 2px 5px 0px hsl(0 0% 0% / 0.3);
+  --shadow-sm:
+    0px 2px 5px 0px hsl(0 0% 0% / 0.6), 0px 1px 2px -1px hsl(0 0% 0% / 0.6);
+  --shadow:
+    0px 2px 5px 0px hsl(0 0% 0% / 0.6), 0px 1px 2px -1px hsl(0 0% 0% / 0.6);
+  --shadow-md:
+    0px 2px 5px 0px hsl(0 0% 0% / 0.6), 0px 2px 4px -1px hsl(0 0% 0% / 0.6);
+  --shadow-lg:
+    0px 2px 5px 0px hsl(0 0% 0% / 0.6), 0px 4px 6px -1px hsl(0 0% 0% / 0.6);
+  --shadow-xl:
+    0px 2px 5px 0px hsl(0 0% 0% / 0.6), 0px 8px 10px -1px hsl(0 0% 0% / 0.6);
+  --shadow-2xl: 0px 2px 5px 0px hsl(0 0% 0% / 1.5);
 }
 
 @theme inline {
@@ -131,7 +157,7 @@
   --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
 
-  --radius-sm: calc(var(--radius) - 6px);
+  --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);

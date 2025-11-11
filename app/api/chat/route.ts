@@ -121,7 +121,8 @@ function createStreamingResponse(
   model: { id: string; name: string },
   reasoningEffort: "low" | "medium" | undefined,
   chatId: string | undefined,
-  writer: any
+  writer: any,
+  userId?: string
 ) {
   const result = streamText({
     ...getModelOptions(modelId, { reasoningEffort }),
@@ -148,7 +149,7 @@ function createStreamingResponse(
       })
     ),
     stopWhen: stepCountIs(20),
-    tools: tools({ modelId, writer }),
+    tools: tools({ modelId, writer, userId, chatId }),
     onError: (error) => {
       console.error("Error communicating with AI")
       console.error(JSON.stringify(error, null, 2))
@@ -252,7 +253,8 @@ export async function POST(req: Request) {
             model,
             reasoningEffort,
             bypassChatId,
-            writer
+            writer,
+            bypassUserId
           )
         },
       }),
@@ -327,7 +329,8 @@ export async function POST(req: Request) {
             model,
             reasoningEffort,
             freeMsgChatId,
-            writer
+            writer,
+            userId
           )
         },
       }),
@@ -487,7 +490,8 @@ export async function POST(req: Request) {
           model,
           reasoningEffort,
           persistedChatId,
-          writer
+          writer,
+          userId
         )
       },
     }),

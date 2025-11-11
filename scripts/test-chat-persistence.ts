@@ -4,22 +4,22 @@
  */
 
 import {
-  createChat,
-  getChatById,
-  getChatsByUser,
-  updateChat,
-  updateChatTitle,
-  deleteChat,
-  restoreChat,
-  saveMessage,
-  getChatMessages,
-  getChatWithMessages,
   countChatMessages,
+  createChat,
+  deleteChat,
+  getChatById,
+  getChatMessages,
+  getChatsByUser,
+  getChatWithMessages,
+  getDeletedChats,
+  getRecentChats,
   getUserChatCount,
   getUserChatStats,
+  restoreChat,
+  saveMessage,
   searchChatsByTitle,
-  getRecentChats,
-  getDeletedChats,
+  updateChat,
+  updateChatTitle,
 } from "../lib/db/services/chat.service"
 import { findOrCreateUser } from "../lib/db/services/user.service"
 
@@ -90,8 +90,7 @@ async function runTests() {
     })
 
     if (!chat) throw new Error("Failed to create chat")
-    if (chat.sandboxId !== "sandbox_123")
-      throw new Error("Sandbox ID mismatch")
+    if (chat.sandboxId !== "sandbox_123") throw new Error("Sandbox ID mismatch")
   })()
 
   // ===== CHAT RETRIEVAL TESTS =====
@@ -121,8 +120,7 @@ async function runTests() {
     const updated = await updateChatTitle(testChatId, "Updated Title")
 
     if (!updated) throw new Error("Failed to update chat")
-    if (updated.title !== "Updated Title")
-      throw new Error("Title not updated")
+    if (updated.title !== "Updated Title") throw new Error("Title not updated")
   })()
 
   await test("Update chat details", async () => {
@@ -186,8 +184,7 @@ async function runTests() {
     const messages = await getChatMessages(testChatId, { limit: 1, offset: 0 })
 
     if (!messages) throw new Error("No messages found")
-    if (messages.length !== 1)
-      throw new Error("Pagination limit not respected")
+    if (messages.length !== 1) throw new Error("Pagination limit not respected")
   })()
 
   await test("Count chat messages", async () => {
@@ -233,9 +230,13 @@ async function runTests() {
 
     if (!stats) throw new Error("Failed to get stats")
     if (stats.activeChats < 2)
-      throw new Error(`Expected at least 2 active chats, got ${stats.activeChats}`)
+      throw new Error(
+        `Expected at least 2 active chats, got ${stats.activeChats}`
+      )
     if (stats.totalMessages < 2)
-      throw new Error(`Expected at least 2 messages, got ${stats.totalMessages}`)
+      throw new Error(
+        `Expected at least 2 messages, got ${stats.totalMessages}`
+      )
   })()
 
   // ===== SOFT DELETE TESTS =====
@@ -246,7 +247,8 @@ async function runTests() {
 
     // Verify chat is marked as deleted
     const deleted = await getChatById(testChatId)
-    if (deleted) throw new Error("Deleted chat still accessible via getChatById")
+    if (deleted)
+      throw new Error("Deleted chat still accessible via getChatById")
   })()
 
   await test("Get deleted chats", async () => {
@@ -329,7 +331,9 @@ async function runTests() {
 
   if (failedTests === 0) {
     console.log("\n🎉 All Phase 3 tests passed successfully!")
-    console.log("\n✨ Phase 3: Chat & Message Persistence is ready for production!")
+    console.log(
+      "\n✨ Phase 3: Chat & Message Persistence is ready for production!"
+    )
   } else {
     console.log(
       `\n⚠️  ${failedTests} test(s) failed. Please review the errors above.`

@@ -9,7 +9,7 @@ import {
 import { SlidersVerticalIcon } from "lucide-react"
 import { AutoFixErrors } from "./auto-fix-errors"
 import { ReasoningEffort } from "./reasoning-effort"
-import { ThemeSelector } from "./theme-selector"
+// import { ThemeSelector } from "./theme-selector"
 
 export function Settings() {
   return (
@@ -27,7 +27,7 @@ export function Settings() {
               Customize your coding experience
             </p>
           </div>
-          <ThemeSelector />
+          {/* <ThemeSelector /> */}
           <AutoFixErrors />
           <ReasoningEffort />
         </div>

@@ -3,7 +3,7 @@
  * Handles all chat and message persistence operations for Phase 3
  */
 
-import { and, desc, eq, isNull, sql } from "drizzle-orm"
+import { and, desc, eq, sql } from "drizzle-orm"
 import { db } from "../drizzle"
 import { chat, message, type Chat, type DBMessage } from "../schema"
 
@@ -56,9 +56,7 @@ export interface GetMessagesOptions {
 /**
  * Create a new chat
  */
-export async function createChat(
-  input: CreateChatInput
-): Promise<Chat | null> {
+export async function createChat(input: CreateChatInput): Promise<Chat | null> {
   try {
     const [newChat] = await db
       .insert(chat)

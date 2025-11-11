@@ -20,7 +20,7 @@ import { NextRequest, NextResponse } from "next/server"
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   // Require authentication
   const auth = await requireAuth(request)
@@ -28,7 +28,7 @@ export async function GET(
   const { user } = auth
 
   try {
-    const chatId = params.id
+    const { id: chatId } = await params
 
     // Get query parameters
     const { searchParams } = new URL(request.url)
@@ -92,7 +92,8 @@ export async function GET(
  */
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
+  // { params }: { params: { id: string } }
 ) {
   // Require authentication
   const auth = await requireAuth(request)
@@ -100,7 +101,7 @@ export async function PATCH(
   const { user } = auth
 
   try {
-    const chatId = params.id
+    const { id: chatId } = await params
     const body = await request.json()
 
     // Verify chat exists and user owns it
@@ -165,7 +166,7 @@ export async function PATCH(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   // Require authentication
   const auth = await requireAuth(request)
@@ -173,7 +174,7 @@ export async function DELETE(
   const { user } = auth
 
   try {
-    const chatId = params.id
+    const { id: chatId } = await params
 
     // Verify chat exists and user owns it
     const existingChat = await getChatById(chatId)
