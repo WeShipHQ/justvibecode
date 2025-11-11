@@ -2,7 +2,6 @@ import { DEFAULT_MODEL } from "@/ai/constants"
 import { getModelOptions } from "@/ai/gateway"
 import { linesSchema, resultSchema } from "@/components/error-monitor/schemas"
 import { generateObject } from "ai"
-import { checkBotId } from "botid/server"
 import { NextResponse } from "next/server"
 import prompt from "./prompt.md"
 

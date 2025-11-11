@@ -9,7 +9,6 @@ import {
   stepCountIs,
   streamText,
 } from "ai"
-import { checkBotId } from "botid/server"
 import { NextResponse } from "next/server"
 import prompt from "./prompt.md"
 import { createChatRouteConfig, type PaymentToken } from "./x402-config"

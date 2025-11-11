@@ -100,7 +100,9 @@ export const addPaymentGate = ({ writer }: Params) =>
           },
         })
 
-        const fileList = generatedFiles.map((f, i) => `${i + 1}. ${f}`).join("\n")
+        const fileList = generatedFiles
+          .map((f, i) => `${i + 1}. ${f}`)
+          .join("\n")
 
         return `✅ Successfully added Solana payment gate with x402-next!
 

@@ -22,6 +22,7 @@ CRITICAL Next.js Requirements:
 - Global styles should be in app/globals.css (not styles/globals.css) when using App Router
 - Use the App Router structure: app/layout.tsx, app/page.tsx, etc.
 - Import global styles in app/layout.tsx as './globals.css'
+- NEVER USE next/font
 
 Files that should NEVER be manually generated:
 

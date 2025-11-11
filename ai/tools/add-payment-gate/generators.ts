@@ -1,7 +1,7 @@
 import type { Sandbox } from "@vercel/sandbox"
-import { getSolanaX402MiddlewareTemplate } from "./templates/solana-x402-middleware"
 import { getSolanaProviderTemplate } from "./templates/solana-provider"
 import { getSolanaWalletButtonTemplate } from "./templates/solana-wallet-button"
+import { getSolanaX402MiddlewareTemplate } from "./templates/solana-x402-middleware"
 
 interface SolanaPaymentConfig {
   sandbox: Sandbox

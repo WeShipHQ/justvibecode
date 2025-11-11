@@ -2,11 +2,11 @@ import { createSandbox as createSandboxDB } from "@/lib/db/services/sandbox.serv
 import { Sandbox } from "@vercel/sandbox"
 import type { UIMessage, UIMessageStreamWriter } from "ai"
 import { tool } from "ai"
+import ms from "ms"
 import z from "zod/v3"
 import type { DataPart } from "../messages/data-parts"
 import description from "./create-sandbox.md"
 import { getRichError } from "./get-rich-error"
-import ms from "ms"
 
 interface Params {
   writer: UIMessageStreamWriter<UIMessage<never, DataPart>>
@@ -44,7 +44,7 @@ export const createSandbox = ({ writer, userId, chatId }: Params) =>
       try {
         const sandbox = await Sandbox.create({
           // timeout: timeout ?? 600000,
-          timeout: ms('45 minutes'), // Temporarily fix timeout to 10 minutes due to Vercel Sandbox issues
+          timeout: ms("45 minutes"), // Temporarily fix timeout to 10 minutes due to Vercel Sandbox issues
           ports,
         })
 
