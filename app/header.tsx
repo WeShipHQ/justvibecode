@@ -2,7 +2,6 @@
 
 import { ConnectWalletButton } from "@/components/connect-wallet-button"
 import { JustVibeCode } from "@/components/icons/just-vibe-code"
-import { ToggleWelcome } from "@/components/modals/welcome"
 import { cn } from "@/lib/utils"
 
 interface Props {
@@ -20,7 +19,7 @@ export function Header({ className }: Props) {
       </div>
       <div className="flex items-center ml-auto space-x-1.5 md:space-x-2">
         <ConnectWalletButton />
-        <ToggleWelcome />
+        {/* <ToggleWelcome /> */}
       </div>
     </header>
   )

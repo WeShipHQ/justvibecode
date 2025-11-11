@@ -1,5 +1,6 @@
 import type { InferUITools, UIMessage, UIMessageStreamWriter } from "ai"
 import type { DataPart } from "../messages/data-parts"
+import { addPaymentGate } from "./add-payment-gate"
 import { createSandbox } from "./create-sandbox"
 import { generateFiles } from "./generate-files"
 import { getSandboxURL } from "./get-sandbox-url"
@@ -18,6 +19,7 @@ export function tools({ modelId, writer, userId, chatId }: Params) {
     generateFiles: generateFiles({ writer, modelId }),
     getSandboxURL: getSandboxURL({ writer }),
     runCommand: runCommand({ writer }),
+    addPaymentGate: addPaymentGate({ writer }),
   }
 }
 

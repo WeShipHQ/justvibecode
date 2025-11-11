@@ -51,6 +51,8 @@ export function Chat({ className, chatId }: Props) {
         const metadata = (message as any).metadata
         if (metadata?.chatId) {
           setCurrentChatId(metadata.chatId)
+          // window.history.pushState(null, "", `/c/${metadata.chatId}`)
+
           router.push(`/c/${metadata.chatId}`)
         }
       }

@@ -32,6 +32,11 @@ export const dataPartSchema = z.object({
     summary: z.string(),
     paths: z.array(z.string()).optional(),
   }),
+  "add-payment-gate": z.object({
+    status: z.enum(["generating", "done", "error"]),
+    files: z.array(z.string()).optional(),
+    error: errorSchema.optional(),
+  }),
 })
 
 export type DataPart = z.infer<typeof dataPartSchema>

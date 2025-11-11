@@ -16,9 +16,9 @@ export async function getAvailableModels() {
   // Return Gemini models directly
   return [
     // { id: "gemini-2.0-flash-exp", name: "Gemini 2.0 Flash Experimental" },
-    // { id: "gemini-1.5-pro", name: "Gemini 1.5 Pro" },
+    { id: "google/gemini-2.5-pro", name: "Gemini 1.5 Pro" },
     // { id: "gemini-1.5-flash", name: "Gemini 1.5 Flash" },
-    { id: "openai/gpt-4o-mini", name: "GPT-4o Mini" },
+    // { id: "openai/gpt-4o-mini", name: "GPT-4o Mini" },
   ]
 }
 
@@ -35,6 +35,10 @@ export function getModelOptions(
     modelId === Models.GoogleGeminiFlash ? "gemini-2.0-flash-exp" : modelId
 
   return {
-    model: openrouter(geminiModelId),
+    model: openrouter(geminiModelId, {
+      reasoning: {
+        effort: "medium",
+      },
+    }),
   }
 }
