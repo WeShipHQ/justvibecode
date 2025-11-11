@@ -100,40 +100,39 @@ export const addPaymentGate = ({ writer }: Params) =>
           },
         })
 
-        return `Successfully added Solana payment gate with x402-next. Generated files: ${generatedFiles.join(", ")}.
+        const fileList = generatedFiles.map((f, i) => `${i + 1}. ${f}`).join("\n")
 
-Configuration:
+        return `✅ Successfully added Solana payment gate with x402-next!
+
+📦 Generated ${generatedFiles.length} files:
+${fileList}
+
+⚙️ Configuration:
 - Blockchain: Solana
 - Network: ${network}
 - Price: ${price}
 - Treasury: ${treasuryAddress}
 - Protected paths: ${protectedPaths.join(", ")}
 
-Components Generated:
-1. middleware.ts - x402-next payment middleware (handles 402 responses & verification)
-2. providers/solana-provider.tsx - Solana wallet context (WalletProvider, ConnectionProvider)
-3. components/wallet-button.tsx - Wallet connection button (WalletMultiButton)
-4. app/layout.tsx - Updated with SolanaProvider wrapper
-5. .env.local - Environment variables (treasury, RPC, network)
-6. package.json - Updated with x402-next ^0.7.1 and wallet adapter dependencies
+🔧 What was added:
+• x402-next middleware (payment verification)
+• Solana wallet adapter (wallet connection)
+• WalletButton component
+• SolanaProvider wrapper
+• Environment configuration
 
-How it works:
-- x402-next middleware intercepts requests and checks for payment
-- Users connect wallet via Solana wallet adapter (Phantom, Solflare, etc.)
-- Middleware returns 402 Payment Required if not paid
-- After payment, x402-next verifies transaction on Solana blockchain
-- Access granted automatically
+📝 Next steps (AI will do automatically):
+1. Run: pnpm install (to install x402-next ^0.7.1 and Solana packages)
+2. Run: pnpm run dev (to start the dev server)
 
-Next steps:
-1. Install dependencies: pnpm install
-2. Start dev server: pnpm run dev
-3. Test payment flow:
-   - Open app in browser
-   - Connect Solana wallet (ensure you're on ${network})
-   - Complete payment transaction
-   - Access granted!
+🧪 How to test:
+1. Open preview URL in browser
+2. Connect Solana wallet (Phantom/Solflare)
+3. Ensure wallet is on ${network}
+4. Make payment transaction
+5. Access granted!
 
-Note: Currently using ${network}. For production, switch to 'mainnet-beta' and update treasury address.`
+⚠️ Note: Using ${network}. For production, switch to 'mainnet-beta'.`
       } catch (error) {
         const richError = getRichError({
           action: "add payment gate",

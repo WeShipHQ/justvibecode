@@ -193,10 +193,10 @@ interface BodyData {
 }
 
 export async function POST(req: Request) {
-  const checkResult = await checkBotId()
-  if (checkResult.isBot) {
-    return NextResponse.json({ error: `Bot detected` }, { status: 403 })
-  }
+  // const checkResult = await checkBotId()
+  // if (checkResult.isBot) {
+  //   return NextResponse.json({ error: `Bot detected` }, { status: 403 })
+  // }
 
   const body = await req.json()
 

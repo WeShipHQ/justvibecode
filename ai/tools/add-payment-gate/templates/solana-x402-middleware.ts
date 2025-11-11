@@ -16,7 +16,6 @@ export function getSolanaX402MiddlewareTemplate(
     treasuryAddress,
     protectedPaths,
     description = "Access to application",
-    appName = "My App",
   } = config
 
   // Generate routes configuration

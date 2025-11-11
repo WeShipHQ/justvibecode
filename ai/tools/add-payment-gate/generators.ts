@@ -1,7 +1,7 @@
 import type { Sandbox } from "@vercel/sandbox"
+import { getSolanaX402MiddlewareTemplate } from "./templates/solana-x402-middleware"
 import { getSolanaProviderTemplate } from "./templates/solana-provider"
 import { getSolanaWalletButtonTemplate } from "./templates/solana-wallet-button"
-import { getSolanaX402MiddlewareTemplate } from "./templates/solana-x402-middleware"
 
 interface SolanaPaymentConfig {
   sandbox: Sandbox
@@ -103,7 +103,7 @@ NEXT_PUBLIC_SOLANA_NETWORK=${network}
   })
 
   // 7. Read existing layout.tsx to update it with SolanaProvider
-  let layoutContent = ""
+  let layoutUpdated = false
   try {
     const cmd = await sandbox.runCommand({
       detached: true,
@@ -111,30 +111,40 @@ NEXT_PUBLIC_SOLANA_NETWORK=${network}
       args: ["app/layout.tsx"],
     })
     const done = await cmd.wait()
-    layoutContent = await done.stdout()
+    let layoutContent = await done.stdout()
 
     // Check if SolanaProvider is already imported
     if (!layoutContent.includes("SolanaProvider")) {
-      // Add import at the top
+      // Add imports at the top
       const importStatement =
         'import { SolanaProvider } from "@/providers/solana-provider"\nimport "@solana/wallet-adapter-react-ui/styles.css"\n'
 
-      // Find the first import or the export statement
+      // Find where to insert imports
       const firstImportIndex = layoutContent.indexOf("import")
       if (firstImportIndex !== -1) {
+        // Find the position after the last import
+        const lines = layoutContent.split("\n")
+        let lastImportLine = 0
+        for (let i = 0; i < lines.length; i++) {
+          if (
+            lines[i].trim().startsWith("import ") ||
+            lines[i].trim().startsWith('import"') ||
+            lines[i].trim().startsWith("import'")
+          ) {
+            lastImportLine = i
+          }
+        }
+
         // Insert after the last import
-        const lastImportEnd =
-          layoutContent.lastIndexOf("\n", layoutContent.indexOf("export")) + 1
-        layoutContent =
-          layoutContent.slice(0, lastImportEnd) +
-          importStatement +
-          layoutContent.slice(lastImportEnd)
+        lines.splice(lastImportLine + 1, 0, importStatement.trim())
+        layoutContent = lines.join("\n")
       } else {
-        // No imports, add at the beginning
+        // No imports found, add at the beginning
         layoutContent = importStatement + layoutContent
       }
 
       // Wrap children with SolanaProvider
+      // Look for {children} and wrap it
       layoutContent = layoutContent.replace(
         /(<body[^>]*>)([\s\S]*?)({children})([\s\S]*?)(<\/body>)/,
         "$1$2<SolanaProvider>$3</SolanaProvider>$4$5"
@@ -144,6 +154,7 @@ NEXT_PUBLIC_SOLANA_NETWORK=${network}
         path: "app/layout.tsx",
         content: layoutContent,
       })
+      layoutUpdated = true
     }
   } catch (error) {
     console.error("Error reading/updating layout.tsx:", error)
