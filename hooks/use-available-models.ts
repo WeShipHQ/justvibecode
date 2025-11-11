@@ -34,36 +34,41 @@ export function useAvailableModels() {
           })
         )
         setModels(newModels)
-        setError(null)
-        setRetryCount(0)
         setIsLoading(false)
+        setRetryCount(0)
       } catch (err) {
-        setError(
-          err instanceof Error ? err : new Error("Failed to fetch models")
-        )
+        const error = err as Error
+
         if (retryCount < MAX_RETRIES) {
-          setRetryCount((prev) => prev + 1)
-          setIsLoading(true)
+          console.log(
+            `Failed to fetch models. Retrying in ${
+              RETRY_DELAY_MILLIS / 1000
+            } seconds...`
+          )
+          setTimeout(() => {
+            setRetryCount((prev) => prev + 1)
+            fetchModels(true)
+          }, RETRY_DELAY_MILLIS)
         } else {
+          setError(error)
           setIsLoading(false)
         }
-      } finally {
-        setIsLoading(false)
       }
     },
     [retryCount]
   )
 
   useEffect(() => {
-    if (retryCount === 0) {
-      fetchModels(false)
-    } else if (retryCount > 0 && retryCount <= MAX_RETRIES) {
-      const timerId = setTimeout(() => {
-        fetchModels(true)
-      }, RETRY_DELAY_MILLIS)
-      return () => clearTimeout(timerId)
-    }
-  }, [retryCount, fetchModels])
+    fetchModels()
+  }, [fetchModels])
 
-  return { models, isLoading, error }
+  return {
+    models,
+    isLoading,
+    error,
+    refetch: () => {
+      setRetryCount(0)
+      fetchModels()
+    },
+  }
 }

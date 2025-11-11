@@ -3,17 +3,23 @@ import { ErrorMonitor } from "@/components/error-monitor/error-monitor"
 import { SandboxState } from "@/components/modals/sandbox-state"
 import { Toaster } from "@/components/ui/sonner"
 import { ChatProvider } from "@/lib/chat-context"
-import { ThemeProvider } from "@/lib/theme/theme-provider"
 import { PrivyWalletProvider } from "@/providers/privy-provider"
 import { RpcProvider } from "@/providers/rpc-provider"
 import type { Metadata } from "next"
+import { Oxanium } from "next/font/google"
 import { NuqsAdapter } from "nuqs/adapters/next/app"
 import type { ReactNode } from "react"
 import { Suspense } from "react"
 import "./globals.css"
 
-const title = "OSS Vibe Coding Platform"
-const description = `This is a demo of an end-to-end coding platform where the user can enter text prompts, and the agent will create a full stack application. It uses Vercel's AI Cloud services like Sandbox for secure code execution, AI Gateway for GPT-5 and other models support, Fluid Compute for efficient rendering and streaming, and it's built with Next.js and the AI SDK.`
+const title = "JustVibeCode - AI-Powered Full Stack Coding Platform"
+const description = `JustVibeCode is an AI-powered full stack coding platform that helps developers build, preview, and deploy applications faster than ever before. With intelligent code generation, real-time collaboration, and seamless integration with popular frameworks and services, JustVibeCode empowers developers to bring their ideas to life with ease and efficiency.`
+
+const oxanium = Oxanium({
+  subsets: ["latin"],
+  variable: "--font-oxanium",
+  weight: ["400", "500", "600", "700"],
+})
 
 export const metadata: Metadata = {
   title,
@@ -39,24 +45,24 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={oxanium.variable}>
       <body className="antialiased">
-        <ThemeProvider>
-          <Suspense fallback={null}>
-            <NuqsAdapter>
-              <PrivyWalletProvider>
-                <RpcProvider>
-                  <ChatProvider>
-                    <ErrorMonitor>{children}</ErrorMonitor>
-                  </ChatProvider>
-                </RpcProvider>
-              </PrivyWalletProvider>
-            </NuqsAdapter>
-          </Suspense>
-          <Toaster />
-          <CommandLogsStream />
-          <SandboxState />
-        </ThemeProvider>
+        {/* <ThemeProvider> */}
+        <Suspense fallback={null}>
+          <NuqsAdapter>
+            <PrivyWalletProvider>
+              <RpcProvider>
+                <ChatProvider>
+                  <ErrorMonitor>{children}</ErrorMonitor>
+                </ChatProvider>
+              </RpcProvider>
+            </PrivyWalletProvider>
+          </NuqsAdapter>
+        </Suspense>
+        <Toaster />
+        <CommandLogsStream />
+        <SandboxState />
+        {/* </ThemeProvider> */}
       </body>
     </html>
   )

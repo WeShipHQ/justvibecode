@@ -8,11 +8,13 @@ import { runCommand } from "./run-command"
 interface Params {
   modelId: string
   writer: UIMessageStreamWriter<UIMessage<never, DataPart>>
+  userId?: string
+  chatId?: string
 }
 
-export function tools({ modelId, writer }: Params) {
+export function tools({ modelId, writer, userId, chatId }: Params) {
   return {
-    createSandbox: createSandbox({ writer }),
+    createSandbox: createSandbox({ writer, userId, chatId }),
     generateFiles: generateFiles({ writer, modelId }),
     getSandboxURL: getSandboxURL({ writer }),
     runCommand: runCommand({ writer }),

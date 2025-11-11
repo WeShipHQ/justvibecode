@@ -1,7 +1,7 @@
 "use client"
 
 import { ConnectWalletButton } from "@/components/connect-wallet-button"
-import { VercelDashed } from "@/components/icons/vercel-dashed"
+import { JustVibeCode } from "@/components/icons/just-vibe-code"
 import { ToggleWelcome } from "@/components/modals/welcome"
 import { cn } from "@/lib/utils"
 
@@ -13,9 +13,9 @@ export function Header({ className }: Props) {
   return (
     <header className={cn("flex items-center justify-between", className)}>
       <div className="flex items-center">
-        <VercelDashed className="ml-1 md:ml-2.5 mr-1.5" />
+        <JustVibeCode className="ml-1 md:ml-2.5 mr-1.5" />
         <span className="hidden md:inline text-sm uppercase font-mono font-bold tracking-tight">
-          OSS Vibe Coding Platform
+          JustVibeCode
         </span>
       </div>
       <div className="flex items-center ml-auto space-x-1.5 md:space-x-2">

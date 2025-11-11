@@ -1,3 +1,4 @@
+import { createSandbox as createSandboxDB } from "@/lib/db/services/sandbox.service"
 import { Sandbox } from "@vercel/sandbox"
 import type { UIMessage, UIMessageStreamWriter } from "ai"
 import { tool } from "ai"
@@ -8,9 +9,11 @@ import { getRichError } from "./get-rich-error"
 
 interface Params {
   writer: UIMessageStreamWriter<UIMessage<never, DataPart>>
+  userId?: string
+  chatId?: string
 }
 
-export const createSandbox = ({ writer }: Params) =>
+export const createSandbox = ({ writer, userId, chatId }: Params) =>
   tool({
     description,
     inputSchema: z.object({
@@ -42,6 +45,25 @@ export const createSandbox = ({ writer }: Params) =>
           timeout: timeout ?? 600000,
           ports,
         })
+
+        // Persist sandbox to database
+        if (userId) {
+          try {
+            await createSandboxDB({
+              sandboxId: sandbox.sandboxId,
+              userId,
+              chatId,
+              metadata: {
+                // @ts-expect-error
+                timeout: timeout ?? 600000,
+                ports,
+              },
+            })
+          } catch (dbError) {
+            console.error("Failed to persist sandbox to database:", dbError)
+            // Continue even if DB save fails - don't block user
+          }
+        }
 
         writer.write({
           id: toolCallId,

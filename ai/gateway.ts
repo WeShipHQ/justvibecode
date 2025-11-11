@@ -1,4 +1,5 @@
 import { createGoogleGenerativeAI } from "@ai-sdk/google"
+import { createOpenRouter } from "@openrouter/ai-sdk-provider"
 import type { LanguageModel } from "ai"
 import { Models } from "./constants"
 
@@ -7,13 +8,17 @@ const google = createGoogleGenerativeAI({
     process.env.GOOGLE_GENERATIVE_AI_API_KEY || process.env.GEMINI_API_KEY,
 })
 
+const openrouter = createOpenRouter({
+  apiKey: process.env.OPEN_ROUTER_API_KEY,
+})
+
 export async function getAvailableModels() {
   // Return Gemini models directly
   return [
-    // { id: Models.GoogleGeminiFlash, name: "Gemini 2.5 Flash" },
-    { id: "gemini-2.0-flash-exp", name: "Gemini 2.0 Flash Experimental" },
+    // { id: "gemini-2.0-flash-exp", name: "Gemini 2.0 Flash Experimental" },
     // { id: "gemini-1.5-pro", name: "Gemini 1.5 Pro" },
     // { id: "gemini-1.5-flash", name: "Gemini 1.5 Flash" },
+    { id: "openai/gpt-4o-mini", name: "GPT-4o Mini" },
   ]
 }
 
@@ -30,6 +35,6 @@ export function getModelOptions(
     modelId === Models.GoogleGeminiFlash ? "gemini-2.0-flash-exp" : modelId
 
   return {
-    model: google(geminiModelId),
+    model: openrouter(geminiModelId),
   }
 }

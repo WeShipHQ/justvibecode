@@ -3,15 +3,17 @@ export enum Models {
   Gemini20FlashExp = "gemini-2.0-flash-exp",
   Gemini15Pro = "gemini-1.5-pro",
   Gemini15Flash = "gemini-1.5-flash",
+  GPT4oMini = "openai/gpt-4o-mini",
 }
 
-export const DEFAULT_MODEL = Models.GoogleGeminiFlash
+export const DEFAULT_MODEL = Models.GPT4oMini
 
 export const SUPPORTED_MODELS: string[] = [
   Models.GoogleGeminiFlash,
   Models.Gemini20FlashExp,
   Models.Gemini15Pro,
   Models.Gemini15Flash,
+  Models.GPT4oMini,
 ]
 
 export const TEST_PROMPTS = [

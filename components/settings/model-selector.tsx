@@ -9,10 +9,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useAvailableModels } from "@/hooks/use-available-models"
 import { cn } from "@/lib/utils"
 import { Loader2Icon } from "lucide-react"
-import { useMemo } from "react"
-import { useAvailableModels } from "./use-available-models"
+import { useEffect, useMemo } from "react"
 import { useModelId } from "./use-settings"
 
 export function ModelSelector({ className }: { className?: string }) {
@@ -22,6 +22,12 @@ export function ModelSelector({ className }: { className?: string }) {
     () => available?.sort((a, b) => a.label.localeCompare(b.label)) || [],
     [available]
   )
+
+  useEffect(() => {
+    if (!modelId && Array.isArray(models) && models.length > 0) {
+      setModelId(models[0].id)
+    }
+  }, [models, modelId, setModelId])
 
   return (
     <Select
@@ -42,7 +48,6 @@ export function ModelSelector({ className }: { className?: string }) {
           <SelectValue placeholder="Select a model" />
         )}
       </SelectTrigger>
-
       <SelectContent>
         <SelectGroup>
           <SelectLabel>Models</SelectLabel>
